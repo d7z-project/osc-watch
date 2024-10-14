@@ -75,13 +75,13 @@ func main() {
 					_ = oscClient.Send(msg3)
 				}
 			}
-
 		}
 	}); err != nil {
 		log.Printf("%v", err)
 	}
 	log.Printf("任务结束")
 }
+
 func must(action string, err error) {
 	if err != nil {
 		panic("failed to " + action + ": " + err.Error())

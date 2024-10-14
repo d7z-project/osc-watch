@@ -1,0 +1,20 @@
+name: Package Release Build
+on:
+  push:
+    tags: [ "**" ]
+jobs:
+  ReleaseBuild:
+    runs-on: "rocky"
+    steps:
+      - name: Check out repository code
+        uses: actions/checkout@v3
+      - id: mirrors
+        name: Use Mirrors
+        uses: actions/mirrors-setup@v1
+      - name: Build Binary
+        run: make
+      - name: Create New Release
+        uses: actions/release-action@v1
+        with:
+          files: |
+            osc-watch-*.gz

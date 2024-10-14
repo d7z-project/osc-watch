@@ -27,3 +27,6 @@ go.work.sum
 
 osc-watch
 osc-watch*
+
+.idea
+*.iml

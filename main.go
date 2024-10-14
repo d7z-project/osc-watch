@@ -89,7 +89,7 @@ func main() {
 					} else {
 						log.Printf("[ %d dBm] 当前手环心率为 %d BPM", device.RSSI, bpm)
 					}
-					atomicBpm = fmt.Sprintf("%s [%d dBm]\nHeart Rate:   %03d / %03d BPM\n", device.LocalName(), device.RSSI, bpm, maxBPM)
+					atomicBpm = fmt.Sprintf("[%d dBm] Heart Rate:   %03d / %03d BPM\n", device.RSSI, bpm, maxBPM)
 				}
 			}
 		}

@@ -79,7 +79,7 @@ func main() {
 
 					if bpm == 255 {
 						log.Printf("当前心率不正常 ( == 255 )，可能未开启小米手环运动模式")
-						atomicBpm = "小米手环离线了"
+						atomicBpm = fmt.Sprintf("[%d dBm] 小米手环寄了", device.RSSI)
 						continue
 					} else {
 						log.Printf("[ %d dBm] 当前手环心率为 %d BPM", device.RSSI, bpm)
@@ -87,15 +87,30 @@ func main() {
 					if maxBPM < bpm {
 						maxBPM = bpm
 					}
-					note := "不想动 orz"
+					note := "休息一下吧"
+					if bpm < 70 {
+						note = "我是废物"
+					}
+					if bpm < 40 {
+						note = "快猝死了"
+					}
+					if bpm < 20 {
+						note = "猝死了"
+					}
 					if 130 >= bpm && bpm > 100 {
-						note = "动起来了"
+						note = "小小的运动一下"
 					}
 					if 150 >= bpm && bpm > 130 {
-						note = "火力全开"
+						note = "呼呼呼 火力全开"
 					}
 					if bpm > 150 {
-						note = "感觉快寄了 orz"
+						note = "感觉快寄了"
+					}
+					if bpm > 180 {
+						note = "真的快寄了"
+					}
+					if bpm > 200 {
+						note = "寄了"
 					}
 					atomicBpm = fmt.Sprintf("BLE RSSI: %d dBm\nHeart Rate: %03d / %03d BPM\n\n%s", device.RSSI, bpm, maxBPM, note)
 				}

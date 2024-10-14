@@ -60,36 +60,44 @@ func main() {
 			message.Append(true)
 			message.Append(true)
 			_ = oscClient.Send(message)
-
 			time.Sleep(2 * time.Second)
-
 		}
 	}()
 
 	go func() {
 		<-ctx.Done()
-		adapter.StopScan()
+		_ = adapter.StopScan()
 	}()
 
 	log.Printf("开始监听来自 %s 的广播数据", mac)
-
 	maxBPM := 0
-
 	if err := adapter.Scan(func(adapter *bluetooth.Adapter, device bluetooth.ScanResult) {
 		if device.Address.MAC.String() == mac {
 			for _, data := range device.ManufacturerData() {
 				if data.CompanyID == 0x0157 {
 					bpm := int(data.Data[3])
-					if maxBPM < bpm {
-						maxBPM = bpm
-					}
+
 					if bpm == 255 {
 						log.Printf("当前心率不正常 ( == 255 )，可能未开启小米手环运动模式")
+						atomicBpm = "小米手环离线了"
 						continue
 					} else {
 						log.Printf("[ %d dBm] 当前手环心率为 %d BPM", device.RSSI, bpm)
 					}
-					atomicBpm = fmt.Sprintf("[%d dBm] Heart Rate:   %03d / %03d BPM\n", device.RSSI, bpm, maxBPM)
+					if maxBPM < bpm {
+						maxBPM = bpm
+					}
+					note := "不想动 orz"
+					if 130 >= bpm && bpm > 100 {
+						note = "动起来了"
+					}
+					if 150 >= bpm && bpm > 130 {
+						note = "火力全开"
+					}
+					if bpm > 150 {
+						note = "感觉快寄了 orz"
+					}
+					atomicBpm = fmt.Sprintf("BLE RSSI: %d dBm\nHeart Rate: %03d / %03d BPM\n\n%s", device.RSSI, bpm, maxBPM, note)
 				}
 			}
 		}

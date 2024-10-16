@@ -15,14 +15,14 @@ import (
 )
 
 var (
-	mac     = ""
+	mac     = "dc:51:57:06:9d:82"
 	host    = "localhost"
 	port    = 9000
 	adapter = bluetooth.DefaultAdapter
 )
 
 func init() {
-	flag.StringVar(&mac, "mac", "", "过滤的MAC地址")
+	flag.StringVar(&mac, "mac", mac, "过滤的MAC地址")
 	flag.StringVar(&host, "addr", "10.0.3.115", "VRChat OSC 地址")
 	flag.IntVar(&port, "port", 9000, "VRChat OSC 端口")
 }
@@ -76,7 +76,6 @@ func main() {
 			for _, data := range device.ManufacturerData() {
 				if data.CompanyID == 0x0157 {
 					bpm := int(data.Data[3])
-
 					if bpm == 255 {
 						log.Printf("当前心率不正常 ( == 255 )，可能未开启小米手环运动模式")
 						atomicBpm = fmt.Sprintf("[%d dBm] 小米手环寄了", device.RSSI)
@@ -84,35 +83,7 @@ func main() {
 					} else {
 						log.Printf("[ %d dBm] 当前手环心率为 %d BPM", device.RSSI, bpm)
 					}
-					if maxBPM < bpm {
-						maxBPM = bpm
-					}
-					note := "休息一下吧"
-					if bpm < 70 {
-						note = "我是废物"
-					}
-					if bpm < 40 {
-						note = "快猝死了"
-					}
-					if bpm < 20 {
-						note = "猝死了"
-					}
-					if 130 >= bpm && bpm > 100 {
-						note = "小小的运动一下"
-					}
-					if 150 >= bpm && bpm > 130 {
-						note = "呼呼呼 火力全开"
-					}
-					if bpm > 150 {
-						note = "感觉快寄了"
-					}
-					if bpm > 180 {
-						note = "真的快寄了"
-					}
-					if bpm > 200 {
-						note = "寄了"
-					}
-					atomicBpm = fmt.Sprintf("BLE RSSI: %d dBm\nHeart Rate: %03d / %03d BPM\n\n%s", device.RSSI, bpm, maxBPM, note)
+					atomicBpm = fmt.Sprintf("[%d dBm] %03d / %03d BPM", device.RSSI, bpm, maxBPM)
 				}
 			}
 		}

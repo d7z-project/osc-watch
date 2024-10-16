@@ -83,6 +83,9 @@ func main() {
 					} else {
 						log.Printf("[ %d dBm] 当前手环心率为 %d BPM", device.RSSI, bpm)
 					}
+					if maxBPM < bpm {
+						maxBPM = bpm
+					}
 					atomicBpm = fmt.Sprintf("[%d dBm] %03d / %03d BPM", device.RSSI, bpm, maxBPM)
 				}
 			}
